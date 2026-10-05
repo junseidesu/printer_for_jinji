@@ -129,9 +129,3 @@ test('impose: 余白確保・手動の倍率', async () => {
   const manual = await I.impose(bytes, { paper: 'B4', scaleMode: 'manual', manualPct: 90 }, PDFLib);
   assert.equal(manual.info.maxScale, 0.9);
 });
-
-test('makeTestSource: 2ページのPDFを作れる', async () => {
-  const s = size('B6');
-  const doc = await PDFLib.PDFDocument.load(await I.makeTestSource(s.w, s.h, PDFLib));
-  assert.equal(doc.getPageCount(), 2);
-});

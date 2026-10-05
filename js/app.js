@@ -120,7 +120,6 @@
 
   function setBusy(busy) {
     $('downloadBtn').disabled = busy;
-    $('testBtn').disabled = busy;
   }
 
   // ---------- 表示 ----------
@@ -169,7 +168,6 @@
     [
       `両面印刷で <b>${BINDING_NAME[info.binding]}</b> を選ぶ`,
       `用紙は <b>${p.paper}</b>、倍率は <b>「実際のサイズ」または「100%」</b> を選ぶ（「用紙に合わせる」は使わない）`,
-      `最初は「向き確認用PDF」を1枚印刷して、表と裏の上下がそろうか確かめると安心です`,
     ].forEach((html) => {
       const li = document.createElement('li');
       li.innerHTML = html;
@@ -323,16 +321,6 @@
     if (!state.result) return;
     const base = state.fileName.replace(/\.pdf$/i, '');
     download(state.result.bytes, `${base}_${suffix(state.result.info)}.pdf`);
-  });
-
-  $('testBtn').addEventListener('click', async () => {
-    if (!state.result) return;
-    const { w, h } = state.result.info.sourceSize;
-    const opts = readOptions();
-    const testSrc = await I.makeTestSource(w, h, window.PDFLib);
-    // 確認用なので倍率は常に自動フィット、ページ番号は出さない
-    const { bytes, info } = await I.impose(testSrc, { ...opts, scaleMode: 'auto', debugNumbers: false }, window.PDFLib);
-    download(bytes, `向き確認_${suffix(info)}.pdf`);
   });
 
   // ---------- エラー ----------

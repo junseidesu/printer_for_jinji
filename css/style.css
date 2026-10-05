@@ -121,7 +121,6 @@ select { width: 100%; }
   border: 1px solid transparent;
 }
 .btn.primary { background: var(--accent); color: var(--accent-text); }
-.btn.secondary { background: var(--surface); color: var(--accent); border-color: var(--accent); }
 .btn:disabled { opacity: .5; cursor: progress; }
 
 .print-guide { margin-top: 14px; background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; }

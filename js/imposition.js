@@ -272,33 +272,9 @@
     }
   }
 
-  /** 向き確認用の2ページの元PDF（表/裏、上向き矢印）を作る */
-  async function makeTestSource(wPt, hPt, PDFLib) {
-    const { PDFDocument, StandardFonts, rgb } = PDFLib;
-    const doc = await PDFDocument.create();
-    const font = await doc.embedFont(StandardFonts.HelveticaBold);
-    for (const label of ['FRONT', 'BACK']) {
-      const page = doc.addPage([wPt, hPt]);
-      const s = Math.min(wPt, hPt);
-      const color = label === 'FRONT' ? rgb(0.1, 0.3, 0.8) : rgb(0.8, 0.2, 0.1);
-      page.drawRectangle({ x: 4, y: 4, width: wPt - 8, height: hPt - 8, borderColor: color, borderWidth: 2 });
-      // 上向き矢印（drawSvgPath は y 軸下向きの SVG 座標）
-      const a = s * 0.18;
-      const cx = wPt / 2, top = hPt * 0.88;
-      page.drawSvgPath(`M 0 0 L ${a} ${a} L ${a * 0.4} ${a} L ${a * 0.4} ${a * 2} L ${-a * 0.4} ${a * 2} L ${-a * 0.4} ${a} L ${-a} ${a} Z`, { x: cx, y: top, color });
-      const big = s * 0.13;
-      const tw = font.widthOfTextAtSize(label, big);
-      page.drawText(label, { x: cx - tw / 2, y: hPt * 0.4, size: big, font, color });
-      const small = s * 0.07;
-      const top2 = 'TOP';
-      page.drawText(top2, { x: cx - font.widthOfTextAtSize(top2, small) / 2, y: top - a * 2 - small * 1.6, size: small, font, color });
-    }
-    return doc.save();
-  }
-
   return {
     MM, PAPERS, OUTPUT_PAPERS, UP_COUNTS, DEFAULT_OPTIONS,
     paperPt, detectPaper, sizeLabel, planForUp, choosePlan, recommendedBinding,
-    placePage, rotatedOrigin, impose, makeTestSource,
+    placePage, rotatedOrigin, impose,
   };
 });
