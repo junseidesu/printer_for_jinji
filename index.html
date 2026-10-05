@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Printer For Jinji</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Printer For Jinji</h1>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <section class="block">
+        <h2>1. 元のPDF</h2>
+        <label id="dropzone" class="dropzone" tabindex="0">
+          <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
+          <span class="dz-main">PDFをここにドロップ</span>
+          <span class="dz-sub">またはクリックして選択</span>
+        </label>
+        <div id="sourceInfo" class="source-info" hidden></div>
+      </section>
+
+      <section class="block">
+        <h2>2. 出力の設定</h2>
+
+        <div class="field">
+          <label for="paper">出力用紙</label>
+          <select id="paper">
+            <option value="A3">A3</option>
+            <option value="B4" selected>B4</option>
+            <option value="A4">A4</option>
+            <option value="B5">B5</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="up">面数（裁断後の部数）</label>
+          <select id="up">
+            <option value="auto" selected>自動</option>
+            <option value="2">2面</option>
+            <option value="4">4面</option>
+            <option value="8">8面</option>
+          </select>
+          <p class="hint" id="upHint"></p>
+        </div>
+
+        <fieldset class="field">
+          <legend>倍率</legend>
+          <label class="radio"><input type="radio" name="scaleMode" value="auto" checked> 自動フィット</label>
+          <label class="radio"><input type="radio" name="scaleMode" value="safe"> 余白確保フィット
+            <span class="inline-num"><input id="safePct" type="number" min="50" max="100" step="1" value="97">%</span></label>
+          <label class="radio"><input type="radio" name="scaleMode" value="manual"> 手動
+            <span class="inline-num"><input id="manualPct" type="number" min="10" max="400" step="1" value="100">%</span></label>
+        </fieldset>
+
+        <div class="field">
+          <label for="binding">プリンターの綴じ方向</label>
+          <select id="binding">
+            <option value="recommended" selected>推奨</option>
+            <option value="other">推奨以外</option>
+          </select>
+          <p class="hint">印刷するときにプリンターで選ぶ両面の綴じ方向です。推奨以外を選ぶと、裏面を180°回転して出力します。</p>
+        </div>
+
+        <div class="field">
+          <label for="rotateDir">横向きページの回転方向</label>
+          <select id="rotateDir">
+            <option value="ccw" selected>左に90°</option>
+            <option value="cw">右に90°</option>
+          </select>
+          <p class="hint">ページの向きが枠と合わないときだけ使います。</p>
+        </div>
+
+        <div class="field">
+          <label for="cutLines">裁断線</label>
+          <select id="cutLines">
+            <option value="none" selected>なし</option>
+            <option value="marks">用紙の端だけ（トンボ風）</option>
+            <option value="full">点線（全体）</option>
+          </select>
+        </div>
+
+        <label class="check"><input id="debugNumbers" type="checkbox"> ページ番号を赤字で印字（確認用）</label>
+      </section>
+    </aside>
+
+    <section class="main">
+      <div id="empty" class="empty">
+        <p>左でPDFを選ぶと、ここに変換結果のプレビューが表示されます。</p>
+        <div class="example">
+          <div class="ex-item"><b>B5両面 → B4</b><span>2面・100%・裁断で2部</span></div>
+          <div class="ex-item"><b>B6両面 → B4</b><span>4面・100%・裁断で4部</span></div>
+          <div class="ex-item"><b>B5両面 → A4</b><span>2面・約82%・裁断で2部</span></div>
+        </div>
+      </div>
+
+      <div id="result" hidden>
+        <div class="summary">
+          <div class="summary-head">
+            <div>
+              <div id="summaryTitle" class="summary-title"></div>
+              <div id="summarySub" class="summary-sub"></div>
+            </div>
+            <div class="actions">
+              <button id="testBtn" class="btn secondary" type="button">向き確認用PDF</button>
+              <button id="downloadBtn" class="btn primary" type="button">PDFをダウンロード</button>
+            </div>
+          </div>
+          <div class="print-guide">
+            <h3>印刷するとき</h3>
+            <ol id="printGuide"></ol>
+          </div>
+          <ul id="warnings" class="warnings"></ul>
+        </div>
+
+        <div id="preview" class="preview"></div>
+      </div>
+
+      <div id="error" class="error" hidden></div>
+    </section>
+  </main>
+
+  <dialog id="zoom" class="zoom">
+    <form method="dialog"><button class="close" aria-label="閉じる">×</button></form>
+    <div id="zoomLabel" class="zoom-label"></div>
+    <canvas id="zoomCanvas"></canvas>
+  </dialog>
+
+  <script src="vendor/pdf-lib.min.js"></script>
+  <!-- pdf.worker を先に読み込むと、file:// で開いてもメインスレッドで pdf.js が動く -->
+  <script src="vendor/pdf.worker.min.js"></script>
+  <script src="vendor/pdf.min.js"></script>
+  <script src="js/imposition.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
